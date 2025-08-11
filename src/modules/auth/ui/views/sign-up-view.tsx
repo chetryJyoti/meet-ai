@@ -88,16 +88,23 @@ export const SignUpView = () => {
     setError("");
 
     try {
-      console.log(`Sign up with ${provider}`);
-      // Add your social sign-up logic here
-    } catch (err: any) {
-      setError(err.message || `${provider} sign up failed. Please try again.`);
+      await authClient.signIn.social({
+        provider: provider,
+      });
+
+      // Add your social sign-in logic here
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(
+          err.message || `${provider} sign in failed. Please try again.`
+        );
+      } else {
+        setError(`${provider} sign in failed. Please try again.`);
+      }
     } finally {
       setIsLoading(false);
     }
   };
-
-  console.log("SignUpView rendered");
 
   return (
     <div className="flex flex-col gap-6">
@@ -132,9 +139,9 @@ export const SignUpView = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => handleSocialSignIn("Google")}
+                    onClick={() => handleSocialSignIn("google")}
                     disabled={isLoading}
-                    className="w-full"
+                    className="w-full hover:cursor-pointer"
                   >
                     <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                       <path
@@ -160,9 +167,9 @@ export const SignUpView = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => handleSocialSignIn("GitHub")}
+                    onClick={() => handleSocialSignIn("github")}
                     disabled={isLoading}
-                    className="w-full"
+                    className="w-full hover:cursor-pointer"
                   >
                     <svg
                       className="mr-2 h-4 w-4"
@@ -310,7 +317,11 @@ export const SignUpView = () => {
                   </Alert>
                 )}
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full hover:cursor-pointer"
+                  disabled={isLoading}
+                >
                   {isLoading ? "Creating account..." : "Create account"}
                 </Button>
 

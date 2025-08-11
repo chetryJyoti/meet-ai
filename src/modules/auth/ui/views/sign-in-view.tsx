@@ -77,16 +77,23 @@ export const SignInView = () => {
     setError("");
 
     try {
-      console.log(`Sign in with ${provider}`);
+      await authClient.signIn.social({
+        provider: provider,
+      });
+
       // Add your social sign-in logic here
-    } catch (err: any) {
-      setError(err.message || `${provider} sign in failed. Please try again.`);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(
+          err.message || `${provider} sign in failed. Please try again.`
+        );
+      } else {
+        setError(`${provider} sign in failed. Please try again.`);
+      }
     } finally {
       setIsLoading(false);
     }
   };
-
-  console.log("SignInView rendered");
 
   return (
     <div className="flex flex-col gap-6">
@@ -104,7 +111,9 @@ export const SignInView = () => {
                     width={60}
                     height={60}
                   />
-                  <p className="text-xl font-semibold text-green-700">Meet AI</p>
+                  <p className="text-xl font-semibold text-green-700">
+                    Meet AI
+                  </p>
                 </div>
 
                 <div className="flex flex-col items-center text-center">
@@ -119,9 +128,9 @@ export const SignInView = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => handleSocialSignIn("Google")}
+                    onClick={() => handleSocialSignIn("google")}
                     disabled={isLoading}
-                    className="w-full"
+                    className="w-full hover:cursor-pointer"
                   >
                     <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                       <path
@@ -147,9 +156,9 @@ export const SignInView = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => handleSocialSignIn("GitHub")}
+                    onClick={() => handleSocialSignIn("github")}
                     disabled={isLoading}
-                    className="w-full"
+                    className="w-full hover:cursor-pointer"
                   >
                     <svg
                       className="mr-2 h-4 w-4"
@@ -241,18 +250,11 @@ export const SignInView = () => {
                   </Alert>
                 )}
 
-                <div className="flex items-center justify-between">
-                  <Button
-                    type="button"
-                    variant="link"
-                    className="px-0 font-normal text-sm"
-                    disabled={isLoading}
-                  >
-                    Forgot your password?
-                  </Button>
-                </div>
-
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full hover:cursor-pointer"
+                  disabled={isLoading}
+                >
                   {isLoading ? "Signing in..." : "Sign in"}
                 </Button>
 
