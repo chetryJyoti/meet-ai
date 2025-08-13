@@ -113,7 +113,6 @@ export const SignUpView = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
               <div className="flex flex-col gap-6">
-                {/* Mobile branding - only visible on mobile */}
                 <div className="flex md:hidden flex-col items-center justify-center gap-2 mb-4">
                   <Image
                     src="/logo.svg"
@@ -340,7 +339,7 @@ export const SignUpView = () => {
               </div>
             </form>
           </Form>
-          <div className="bg-gradient-to-br from-green-700 to-green-900 relative hidden md:flex flex-col items-center justify-center gap-y-4">
+          <div className="bg-gradient-to-br from-sidebar-accent to-sidebar relative hidden md:flex flex-col items-center justify-center gap-y-4">
             <Image
               src="/logo.svg"
               alt="Meet AI Logo"
