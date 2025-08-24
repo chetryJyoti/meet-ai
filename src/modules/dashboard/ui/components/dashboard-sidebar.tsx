@@ -1,33 +1,23 @@
 "use client";
 
-import {
-  BotIcon,
-  Calendar,
-  Home,
-  Inbox,
-  Search,
-  Settings,
-  StarIcon,
-  VideoIcon,
-} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { BotIcon, StarIcon, VideoIcon } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
-import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
 import { DashboardUserButton } from "./dashboard-user-button";
 
 const firstSection = [
@@ -52,8 +42,12 @@ const secondSection = [
 ];
 
 export function DashboardSidebar() {
+
   const pathname = usePathname();
-  //   const pathname = "/meetings";
+  const isItemActive = (itemUrl: string) => {
+    return pathname === itemUrl || pathname.startsWith(itemUrl + "/");
+  };
+
   return (
     <Sidebar>
       <SidebarHeader className="text-sidebar-accent-foreground">
@@ -69,26 +63,28 @@ export function DashboardSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {firstSection.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton
-                    asChild
-                    className={cn(
-                      "h-10 hover:bg-linear-to-r/oklch border border-transparent hover:border-[#5D6B68]/10 from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50",
-                      pathname === item.url &&
-                        "bg-linear-to-r/oklch border-[#5D6B68]/10"
-                    )}
-                    isActive={pathname === item.url}
-                  >
-                    <Link href={item.url}>
-                      <item.icon className="size-5" />
-                      <span className="text-sm font-medium tracking-tight">
-                        {item.label}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {firstSection.map((item) => {
+                const isActive = isItemActive(item.url);
+                return (
+                  <SidebarMenuItem key={item.url}>
+                    <SidebarMenuButton
+                      asChild
+                      className={cn(
+                        "h-10 hover:bg-linear-to-r/oklch border border-transparent hover:border-[#5D6B68]/10 from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50",
+                        isActive && "bg-linear-to-r/oklch border-[#5D6B68]/10"
+                      )}
+                      isActive={isActive}
+                    >
+                      <Link href={item.url}>
+                        <item.icon className="size-5" />
+                        <span className="text-sm font-medium tracking-tight">
+                          {item.label}
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -98,26 +94,28 @@ export function DashboardSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {secondSection.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton
-                    asChild
-                    className={cn(
-                      "h-10 hover:bg-linear-to-r/oklch border border-transparent hover:border-[#5D6B68]/10 from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50",
-                      pathname === item.url &&
-                        "bg-linear-to-r/oklch border-[#5D6B68]/10"
-                    )}
-                    isActive={pathname === item.url}
-                  >
-                    <Link href={item.url}>
-                      <item.icon className="size-5" />
-                      <span className="text-sm font-medium tracking-tight">
-                        {item.label}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {secondSection.map((item) => {
+                const isActive = isItemActive(item.url);
+                return (
+                  <SidebarMenuItem key={item.url}>
+                    <SidebarMenuButton
+                      asChild
+                      className={cn(
+                        "h-10 hover:bg-linear-to-r/oklch border border-transparent hover:border-[#5D6B68]/10 from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50",
+                        isActive && "bg-linear-to-r/oklch border-[#5D6B68]/10"
+                      )}
+                      isActive={isActive}
+                    >
+                      <Link href={item.url}>
+                        <item.icon className="size-5" />
+                        <span className="text-sm font-medium tracking-tight">
+                          {item.label}
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
