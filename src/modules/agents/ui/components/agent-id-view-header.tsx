@@ -64,12 +64,15 @@ export const AgentIdViewHeader = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={onEdit}>
+          <DropdownMenuItem onClick={onEdit} className="cursor-pointer">
             <PencilIcon className="size-4 text-black" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={onRemove}>
-            <TrashIcon className="size-4 text-black" />
+          <DropdownMenuItem
+            onClick={onRemove}
+            className="text-red-500 hover:text-red-600 focus:text-red-600 hover:bg-red-50 focus:bg-red-50 cursor-pointer"
+          >
+            <TrashIcon className="size-4 text-red-500" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

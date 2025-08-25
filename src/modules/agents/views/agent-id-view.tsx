@@ -15,6 +15,8 @@ import { GeneratedAvatar } from "@/components/generated-avatar";
 import { AgentIdViewHeader } from "../ui/components/agent-id-view-header";
 import { Badge } from "@/components/ui/badge";
 import { useConfirm } from "../hooks/use-confirm";
+import { useState } from "react";
+import { UpdateAgentDialog } from "../ui/components/update-agent-dialog";
 
 interface Props {
   agentId: string;
@@ -24,6 +26,8 @@ export const AgentIdView = ({ agentId }: Props) => {
   const trpc = useTRPC();
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  const [updateAgentDialogOpen, setUpdateAgentDialogOpen] = useState(false);
 
   const { data } = useSuspenseQuery(
     trpc.agents.getOne.queryOptions({ id: agentId })
@@ -60,11 +64,16 @@ export const AgentIdView = ({ agentId }: Props) => {
   return (
     <>
       <RemoveConfirmation />
+      <UpdateAgentDialog
+        open={updateAgentDialogOpen}
+        onOpenChange={setUpdateAgentDialogOpen}
+        initialValues={data}
+      />
       <div className="flex-1 p-4 md:px-8 flex flex-col gap-y-4">
         <AgentIdViewHeader
           agentId={agentId}
           agentName={data.name}
-          onEdit={() => {}}
+          onEdit={() => setUpdateAgentDialogOpen(true)}
           onRemove={handleRemoveAgent}
         />
         <div className="bg-white rounded-lg border">
