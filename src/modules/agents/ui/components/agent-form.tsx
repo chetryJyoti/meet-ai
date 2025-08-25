@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useTRPC } from "@/trpc/client";
 import { AgentGetOne } from "../../types";
-import { agentsInsertsSchema } from "../../schemas";
+import { agentsInsertSchema } from "../../schemas";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,25 @@ export const AgentForm = ({
   const createAgent = useMutation(
     trpc.agents.create.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
+        // TODO: Invalidate free tier usage
+        onSuccess?.();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+        // TODO: Check if error cod is `FORBIDDEN`, redirect to "/upgrade"
+      },
+    })
+  );
+
+  const updateAgent = useMutation(
+    trpc.agents.update.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
 
         if (initialValues?.id) {
           await queryClient.invalidateQueries(
@@ -54,19 +72,19 @@ export const AgentForm = ({
     })
   );
 
-  const form = useForm<z.infer<typeof agentsInsertsSchema>>({
-    resolver: zodResolver(agentsInsertsSchema),
+  const form = useForm<z.infer<typeof agentsInsertSchema>>({
+    resolver: zodResolver(agentsInsertSchema),
     defaultValues: {
       name: initialValues?.name ?? "",
       instructions: initialValues?.instructions ?? "",
     },
   });
   const isEdit = !!initialValues?.id;
-  const isPending = createAgent.isPending;
+  const isPending = createAgent.isPending || updateAgent.isPending;
 
-  const onSubmit = (values: z.infer<typeof agentsInsertsSchema>) => {
+  const onSubmit = (values: z.infer<typeof agentsInsertSchema>) => {
     if (isEdit) {
-      console.log("TODO: updateAgent");
+      updateAgent.mutate({ ...values, id: initialValues.id });
     } else {
       createAgent.mutate(values);
     }
