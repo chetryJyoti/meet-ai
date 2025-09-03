@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -40,11 +40,23 @@ export const MeetingForm = ({
 
   const [openNewAgentDialog, setOpenNewAgentDialog] = useState(false);
   const [agentSearch, setAgentSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  // Debounce search input
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(agentSearch);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [agentSearch]);
 
   const agents = useQuery(
     trpc.agents.getMany.queryOptions({
       pageSize: 100,
-      search: agentSearch,
+      search: debouncedSearch,
     })
   );
 
@@ -150,6 +162,12 @@ export const MeetingForm = ({
                     onSearch={setAgentSearch}
                     value={field.value}
                     placeholder="Search an agent"
+                    isLoading={agents.isLoading || (agentSearch !== debouncedSearch)}
+                    emptyMessage={
+                      agentSearch && !agents.isLoading 
+                        ? `No agents found for "${agentSearch}"`
+                        : "No agents found"
+                    }
                   />
                 </FormControl>
                 <FormDescription>

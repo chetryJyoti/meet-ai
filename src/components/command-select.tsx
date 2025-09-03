@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { ChevronsUpDownIcon } from "lucide-react";
+import { ChevronsUpDownIcon, Loader2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -23,6 +23,8 @@ interface Props {
   placeholder?: string;
   isSearchable?: boolean;
   className?: string;
+  isLoading?: boolean;
+  emptyMessage?: string;
 }
 
 export const CommandSelect = ({
@@ -32,9 +34,19 @@ export const CommandSelect = ({
   value,
   placeholder = "Search an option",
   className,
+  isLoading = false,
+  emptyMessage = "No options found",
 }: Props) => {
   const [open, setOpen] = useState(false);
   const selectedOption = options.find((option) => option.value === value);
+  
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    // Clear search when dialog closes
+    if (!newOpen && onSearch) {
+      onSearch("");
+    }
+  };
   return (
     <>
       <Button
@@ -45,34 +57,47 @@ export const CommandSelect = ({
           !selectedOption && "text-muted-foreground",
           className
         )}
-        onClick={() => setOpen(true)}
+        onClick={() => handleOpenChange(true)}
       >
         <div>{selectedOption?.children ?? placeholder}</div>
-        <ChevronsUpDownIcon />
+        {isLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <ChevronsUpDownIcon />
+        )}
       </Button>
       <CommandResponsiveDialog
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={handleOpenChange}
         shouldFilter={!onSearch}
       >
         <CommandInput placeholder="Search..." onValueChange={onSearch} />
         <CommandList>
-          <CommandEmpty>
-            <span className="text-muted-foreground text-sm">
-              No options found
-            </span>
-          </CommandEmpty>
-          {options.map((option) => (
-            <CommandItem
-              key={option.id}
-              onSelect={() => {
-                onSelect(option.value);
-                setOpen(false);
-              }}
-            >
-              {option.children}
-            </CommandItem>
-          ))}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-6">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span className="ml-2 text-sm text-muted-foreground">Searching...</span>
+            </div>
+          ) : (
+            <>
+              <CommandEmpty>
+                <span className="text-muted-foreground text-sm">
+                  {emptyMessage}
+                </span>
+              </CommandEmpty>
+              {options.map((option) => (
+                <CommandItem
+                  key={option.id}
+                  onSelect={() => {
+                    onSelect(option.value);
+                    handleOpenChange(false);
+                  }}
+                >
+                  {option.children}
+                </CommandItem>
+              ))}
+            </>
+          )}
         </CommandList>
       </CommandResponsiveDialog>
     </>
