@@ -34,11 +34,11 @@ const statusIconMap = {
 };
 
 const statusColorMap = {
-  upcoming: "bg-yellow-500/20 text-yellow-700 border-yellow-700",
-  active: "bg-blue-500/20 text-blue-700 border-blue-700",
-  completed: "bg-emerald-500/20 text-emerald-700 border-emerald-700",
-  processing: "bg-rose-500/20 text-rose-700 border-rose-700",
-  cancelled: "bg-gray-500/20 text-gray-700 border-gray-700",
+  upcoming: "bg-yellow-500/20 text-yellow-800 border-yellow-800",
+  active: "bg-blue-500/20 text-blue-800 border-blue-800",
+  completed: "bg-emerald-500/20 text-emerald-800 border-emerald-800",
+  processing: "bg-rose-500/20 text-rose-800 border-rose-800",
+  cancelled: "bg-gray-500/20 text-gray-800 border-gray-800",
 };
 
 export const columns: ColumnDef<MeetingGetMany[number]>[] = [

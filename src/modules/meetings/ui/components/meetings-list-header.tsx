@@ -1,11 +1,12 @@
 "use client";
 
-import { PlusIcon, XCircleIcon } from "lucide-react";
+import { useState } from "react";
+import { PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { DEFAULT_PAGE } from "@/constants";
 import { NewMeetingDilaog } from "./new-meeting-dialog";
-import { useState } from "react";
+import { MeetingsSearchFilter } from "./meetings-search-filter";
+import { StatusFilter } from "./status-filter";
 
 export const MeetingsListHeader = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -24,7 +25,10 @@ export const MeetingsListHeader = () => {
             New Meeting
           </Button>
         </div>
-        <div className="flex items-center gap-x-2 p-1">Todo:filters</div>
+        <div className="flex items-center gap-x-2 p-1">
+          <MeetingsSearchFilter />
+          <StatusFilter />
+        </div>
       </div>
     </>
   );
