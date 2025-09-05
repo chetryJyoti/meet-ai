@@ -2,7 +2,7 @@ import { z } from "zod";
 import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 
 import { db } from "@/db";
-import { meetings } from "@/db/schema";
+import { meetings, agents } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import {
   DEFAULT_PAGE,
@@ -52,9 +52,24 @@ export const meetingsRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
       const [existingMeeting] = await db
-        // TODO: change to actual count
-        .select({ ...getTableColumns(meetings), meetingCount: sql<number>`5` })
+        .select({ 
+          ...getTableColumns(meetings), 
+          meetingCount: sql<number>`5`,
+          duration: sql<number>`
+            CASE 
+              WHEN ${meetings.startedAt} IS NOT NULL AND ${meetings.endedAt} IS NOT NULL
+              THEN EXTRACT(EPOCH FROM (${meetings.endedAt} - ${meetings.startedAt})) / 60
+              ELSE NULL
+            END
+          `,
+          agent: {
+            id: agents.id,
+            name: agents.name,
+            instructions: agents.instructions,
+          }
+        })
         .from(meetings)
+        .innerJoin(agents, eq(meetings.agentId, agents.id))
         .where(
           and(eq(meetings.id, input.id), eq(meetings.userId, ctx.auth.user.id))
         );
@@ -84,8 +99,24 @@ export const meetingsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { search, page, pageSize } = input;
       const data = await db
-        .select({ ...getTableColumns(meetings), meetingCount: sql<number>`8` })
+        .select({ 
+          ...getTableColumns(meetings), 
+          meetingCount: sql<number>`8`,
+          duration: sql<number>`
+            CASE 
+              WHEN ${meetings.startedAt} IS NOT NULL AND ${meetings.endedAt} IS NOT NULL
+              THEN EXTRACT(EPOCH FROM (${meetings.endedAt} - ${meetings.startedAt})) / 60
+              ELSE NULL
+            END
+          `,
+          agent: {
+            id: agents.id,
+            name: agents.name,
+            instructions: agents.instructions,
+          }
+        })
         .from(meetings)
+        .innerJoin(agents, eq(meetings.agentId, agents.id))
         .where(
           and(
             eq(meetings.userId, ctx.auth.user.id),
@@ -99,6 +130,7 @@ export const meetingsRouter = createTRPCRouter({
       const [total] = await db
         .select({ count: count() })
         .from(meetings)
+        .innerJoin(agents, eq(meetings.agentId, agents.id))
         .where(
           and(
             eq(meetings.userId, ctx.auth.user.id),

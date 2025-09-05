@@ -7,23 +7,20 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onRowClick?: (row: TData) => void;
+  emptyStateComponent?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onRowClick,
+  emptyStateComponent,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -51,14 +48,24 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))
           ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-19 text-muted-foreground text-center"
-              >
-                No results.
-              </TableCell>
-            </TableRow>
+            <>
+              {emptyStateComponent ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="p-0">
+                    {emptyStateComponent}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-19 text-muted-foreground text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </>
           )}
         </TableBody>
       </Table>

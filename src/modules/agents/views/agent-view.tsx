@@ -3,13 +3,13 @@ import { useTRPC } from "@/trpc/client";
 import { columns } from "../ui/components/columns";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
-import { DataTable } from "../ui/components/data-table";
 import { LoadingState } from "@/components/loading-state";
 import { useAgentsFilters } from "../hooks/use-agent-filters";
 import { DataPagination } from "../ui/components/data-pagination";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { DataTable } from "@/components/data-table";
 
 export const AgentsView = () => {
   const router = useRouter();
@@ -26,18 +26,18 @@ export const AgentsView = () => {
         data={data.items}
         columns={columns}
         onRowClick={(row) => router.push(`/agents/${row.id}`)}
+        emptyStateComponent={
+          <EmptyState
+            title="Create your first agent"
+            description="Create an agent to join your meetings. Each agent will follow your instructions and can interact with participants during the call."
+          />
+        }
       />
       <DataPagination
         page={filters.page}
         totalPages={data.totalPages}
         onPageChange={(page) => setFilters({ page })}
       />
-      {data.items.length === 0 && (
-        <EmptyState
-          title="Create your first agent"
-          description="Create an agent to join your meetings. Each agent will follow your instructions and can interact with participants during the call."
-        />
-      )}
     </div>
   );
 };
