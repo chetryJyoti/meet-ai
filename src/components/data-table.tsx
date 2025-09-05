@@ -50,11 +50,21 @@ export function DataTable<TData, TValue>({
           ) : (
             <>
               {emptyStateComponent ? (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="p-0">
-                    {emptyStateComponent}
-                  </TableCell>
-                </TableRow>
+                <>
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-19 text-muted-foreground text-center"
+                    >
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="p-0">
+                      {emptyStateComponent}
+                    </TableCell>
+                  </TableRow>
+                </>
               ) : (
                 <TableRow>
                   <TableCell

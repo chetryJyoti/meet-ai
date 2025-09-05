@@ -5,7 +5,7 @@ import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
 import { LoadingState } from "@/components/loading-state";
 import { useAgentsFilters } from "../hooks/use-agent-filters";
-import { DataPagination } from "../ui/components/data-pagination";
+import { DataPagination } from "@/components/data-pagination";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
