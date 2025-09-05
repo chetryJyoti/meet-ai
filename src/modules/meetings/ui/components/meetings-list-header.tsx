@@ -1,15 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, XCircleIcon } from "lucide-react";
 
+import { StatusFilter } from "./status-filter";
 import { Button } from "@/components/ui/button";
+import { AgentIdFilter } from "./agent-id-filter";
 import { NewMeetingDilaog } from "./new-meeting-dialog";
 import { MeetingsSearchFilter } from "./meetings-search-filter";
-import { StatusFilter } from "./status-filter";
+import { useMeetingsFilters } from "../../hooks/use-meetings-filters";
 
 export const MeetingsListHeader = () => {
+  const [filters, setFilters] = useMeetingsFilters();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const isAnyFilterModified =
+    !!filters.status || !!filters.search || !!filters.agentId;
+
+  const onClearFilter = () => {
+    setFilters({
+      status: null,
+      agentId: "",
+      search: "",
+      page: 1,
+    });
+  };
+
   return (
     <>
       <NewMeetingDilaog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
@@ -28,6 +44,13 @@ export const MeetingsListHeader = () => {
         <div className="flex items-center gap-x-2 p-1">
           <MeetingsSearchFilter />
           <StatusFilter />
+          <AgentIdFilter />
+          {isAnyFilterModified && (
+            <Button variant="outline" onClick={onClearFilter}>
+              <XCircleIcon className="size-4" />
+              Clear
+            </Button>
+          )}
         </div>
       </div>
     </>
