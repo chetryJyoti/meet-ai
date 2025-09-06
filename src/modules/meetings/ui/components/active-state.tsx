@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 
 interface Props {
-  meetindId: string;
+  meetingId: string;
 }
 
-export const ActiveState = ({ meetindId }: Props) => {
+export const ActiveState = ({ meetingId }: Props) => {
   return (
     <div className="bg-white rounded-lg px-4 py-5 flex flex-col gap-y-8 items-center justify-center">
       <EmptyState
@@ -17,7 +17,7 @@ export const ActiveState = ({ meetindId }: Props) => {
       />
       <div className="flex flex-col-reverse lg:flex-row lg:justify-center items-center gap-2">
         <Button asChild className="w-full lg:w-auto">
-          <Link href={`/call/${meetindId}`} target="_blank">
+          <Link href={`/call/${meetingId}`} target="_blank">
             <VideoIcon />
             Join meeting
           </Link>
