@@ -151,7 +151,7 @@ export const MeetingForm = ({
                         <div className="flex items-center gap-x-2">
                           <GeneratedAvatar
                             seed={agent.name}
-                            variant="bottsNeutral"
+                            variant="botttsNeutral"
                             className="border size-6"
                           />
                           <span>{agent.name}</span>
@@ -162,9 +162,11 @@ export const MeetingForm = ({
                     onSearch={setAgentSearch}
                     value={field.value}
                     placeholder="Search an agent"
-                    isLoading={agents.isLoading || (agentSearch !== debouncedSearch)}
+                    isLoading={
+                      agents.isLoading || agentSearch !== debouncedSearch
+                    }
                     emptyMessage={
-                      agentSearch && !agents.isLoading 
+                      agentSearch && !agents.isLoading
                         ? `No agents found for "${agentSearch}"`
                         : "No agents found"
                     }
