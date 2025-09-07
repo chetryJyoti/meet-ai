@@ -8,6 +8,9 @@ import {
   AgentsIdViewErrorState,
   AgentsIdViewLoading,
 } from "@/modules/agents/views/agent-id-view";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 interface Props {
   params: Promise<{ agentId: string }>;
@@ -15,6 +18,12 @@ interface Props {
 
 const Page = async ({ params }: Props) => {
   const { agentId } = await params;
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) redirect("/sign-in");
 
   const queryClient = getQueryClient();
   void queryClient.prefetchQuery(

@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { VideoIcon } from "lucide-react";
 import {
   useMutation,
@@ -9,13 +10,12 @@ import { toast } from "sonner";
 import { useTRPC } from "@/trpc/client";
 import { useRouter } from "next/navigation";
 
+import { Badge } from "@/components/ui/badge";
+import { useConfirm } from "../hooks/use-confirm";
 import { ErrorState } from "@/components/error-state";
 import { LoadingState } from "@/components/loading-state";
 import { GeneratedAvatar } from "@/components/generated-avatar";
 import { AgentIdViewHeader } from "../ui/components/agent-id-view-header";
-import { Badge } from "@/components/ui/badge";
-import { useConfirm } from "../hooks/use-confirm";
-import { useState } from "react";
 import { UpdateAgentDialog } from "../ui/components/update-agent-dialog";
 
 interface Props {
