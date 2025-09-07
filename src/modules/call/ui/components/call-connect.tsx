@@ -13,8 +13,8 @@ import {
 
 import { useTRPC } from "@/trpc/client";
 
-import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { CallUI } from "./call-ui";
+import "@stream-io/video-react-sdk/dist/css/styles.css";
 
 interface Props {
   meetingId: string;
