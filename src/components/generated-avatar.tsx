@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 interface GeneratedAvatarProps {
   seed: string;
   className?: string;
-  variant: "bottsNeutral" | "initials";
+  variant: "botttsNeutral" | "initials";
 }
 export const GeneratedAvatar = ({
   seed,
@@ -16,7 +16,7 @@ export const GeneratedAvatar = ({
 }: GeneratedAvatarProps) => {
   let avatar;
 
-  if (variant === "bottsNeutral") {
+  if (variant === "botttsNeutral") {
     avatar = createAvatar(botttsNeutral, { seed });
   } else {
     avatar = createAvatar(initials, {

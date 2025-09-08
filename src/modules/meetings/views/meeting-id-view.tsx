@@ -83,17 +83,17 @@ export const MeetingIdView = ({ meetingId }: Props) => {
           onEdit={() => setUpdateMeetingDialogOpen(true)}
           onRemove={handleRemoveMeeting}
         />
-        {isActive && <ActiveState meetindId={meetingId} />}
+        {isActive && <ActiveState meetingId={meetingId} />}
         {isUpcoming && (
           <UpcomingState
-            meetindId={meetingId}
+            meetingId={meetingId}
             onCancelMeeting={() => {}}
             isCanceling={false}
           />
         )}
         {isCancelled && <CancelledState />}
-        {isCompleted && <div>Meeting is completed</div>}
         {isProcessing && <ProcesingState />}
+        {isCompleted && <div>Meeting is completed</div>}
       </div>
     </>
   );

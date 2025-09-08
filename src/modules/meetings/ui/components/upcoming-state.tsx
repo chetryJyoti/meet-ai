@@ -4,13 +4,13 @@ import { VideoIcon, BanIcon } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 
 interface Props {
-  meetindId: string;
+  meetingId: string;
   onCancelMeeting: () => void;
   isCanceling: boolean;
 }
 
 export const UpcomingState = ({
-  meetindId,
+  meetingId,
   onCancelMeeting,
   isCanceling,
 }: Props) => {
@@ -32,7 +32,7 @@ export const UpcomingState = ({
           Cancel meeting
         </Button>
         <Button asChild className="w-full lg:w-auto" disabled={isCanceling}>
-          <Link href={`/call/${meetindId}`} target="_blank">
+          <Link href={`/call/${meetingId}`}>
             <VideoIcon />
             Start meeting
           </Link>
