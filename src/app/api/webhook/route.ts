@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     if (!meetingId) {
       return NextResponse.json(
-        { error: "Meeting meetingId!" },
+        { error: "Missing meetingId!" },
         { status: 400 }
       );
     }
@@ -91,16 +91,23 @@ export async function POST(req: NextRequest) {
     }
 
     // now we join the agent to the meeting
-    const call = streamVideo.video.call("default", meetingId);
-    const realtimeClient = await streamVideo.video.connectOpenAi({
-      call,
-      openAiApiKey: process.env.OPENAI_API_KEY!,
-      agentUserId: existingAgent.id,
-    });
+    try {
+      const call = streamVideo.video.call("default", meetingId);
+      const realtimeClient = await streamVideo.video.connectOpenAi({
+        call,
+        openAiApiKey: process.env.OPENAI_API_KEY!,
+        agentUserId: existingAgent.id,
+      });
 
-    realtimeClient.updateSession({
-      instructions: existingAgent.instructions,
-    });
+      realtimeClient.updateSession({
+        instructions: existingAgent.instructions,
+      });
+    } catch (error) {
+      return NextResponse.json(
+        { error: "Failed to connect agent to call" },
+        { status: 500 }
+      );
+    }
   } else if (eventType === "call.session_participant_left") {
     const event = payload as CallSessionParticipantLeftEvent;
     const meetingId = event.call_cid.split(":")[1];
