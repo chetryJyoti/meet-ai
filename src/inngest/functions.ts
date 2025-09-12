@@ -1,10 +1,19 @@
 import { inngest } from "./client";
+import JSONL from "jsonl-parse-stringify";
+import { StreamTranscriptionItem } from "@/modules/meetings/types";
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+export const meetingsProcessing = inngest.createFunction(
+  { id: "meetings/processing" },
+  { event: "meetings/processing" },
   async ({ event, step }) => {
-    await step.sleep("wait-a-moment", "1s");
-    return { message: `Hello ${event.data.email}!` };
-  },
+    const response = await step.run("fetch-transcript", async () => {
+      return fetch(event.data.transcriptUrl).then((res) => res.text());
+    });
+
+    const transcript = await step.run("parse-transcript", async () => {
+      return JSONL.parse<StreamTranscriptionItem>(response);
+    });
+
+    
+  }
 );
