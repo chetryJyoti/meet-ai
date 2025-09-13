@@ -7,6 +7,7 @@ import {
   CallRecordingReadyEvent,
   CallSessionStartedEvent,
 } from "@stream-io/node-sdk";
+import { inngest } from "@/inngest/client";
 
 import { db } from "@/db";
 import { agents, meetings } from "@/db/schema";
@@ -155,6 +156,14 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
+
+    await inngest.send({
+      name: "meetings/processing",
+      data: {
+        meetingId: updatedMeeting.id,
+        transcriptUrl: updatedMeeting.transcriptUrl,
+      },
+    });
   } else if (eventType === "call.recording_ready") {
     const event = payload as CallRecordingReadyEvent;
     const meetingId = event.call_cid.split(":")[1];
