@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { eq, inArray } from "drizzle-orm";
 import { agents, meetings, user } from "@/db/schema";
 
+// AI agent that converts raw transcripts into structured markdown summaries
 const summarizer = createAgent({
   name: "summarizer",
   system:
@@ -32,22 +33,39 @@ Example:
   model: openai({ model: "gpt-4o", apiKey: process.env.OPENAI_API_KEY }),
 });
 
+/**
+ * MEETING PROCESSING PIPELINE
+ * 
+ * Triggered when Stream Video finishes transcribing a meeting.
+ * This function processes the raw transcript through multiple steps:
+ * 1. Downloads the transcript from Stream's URL
+ * 2. Parses the JSONL format into structured data
+ * 3. Enriches transcript with speaker names (users + AI agents)
+ * 4. Uses AI to generate a structured summary
+ * 5. Saves the summary and marks meeting as completed
+ */
 export const meetingsProcessing = inngest.createFunction(
   { id: "meetings/processing" },
   { event: "meetings/processing" },
   async ({ event, step }) => {
+    // Download raw transcript file from Stream Video
     const response = await step.run("fetch-transcript", async () => {
       return fetch(event.data.transcriptUrl).then((res) => res.text());
     });
 
+    // Parse Stream's JSONL format into structured transcript items
     const transcript = await step.run("parse-transcript", async () => {
       return JSONL.parse<StreamTranscriptionItem>(response);
     });
 
+    // Enrich transcript with speaker names (both human users and AI agents)
     const transcriptWithSpeakers = await step.run("add-speakers", async () => {
+      // Get unique speaker IDs from transcript
       const speakerIds = [
         ...new Set(transcript.map((item) => item.speaker_id)),
       ];
+      
+      // Look up human users and AI agents who participated
       const userSpeakers = await db
         .select()
         .from(user)
@@ -60,6 +78,7 @@ export const meetingsProcessing = inngest.createFunction(
         .where(inArray(agents.id, speakerIds))
         .then((agents) => agents.map((agent) => ({ ...agent })));
 
+      // Merge all speakers and attach names to transcript items
       const speakers = [...userSpeakers, ...agentSpeakers];
       return transcript.map((item) => {
         const speaker = speakers.find(
@@ -83,11 +102,13 @@ export const meetingsProcessing = inngest.createFunction(
       });
     });
 
+    // Generate AI summary of the enriched transcript
     const { output } = await summarizer.run(
       "Summarize the following trascript: " +
         JSON.stringify(transcriptWithSpeakers)
     );
 
+    // Save summary to database and mark meeting as completed
     await step.run("save-summary", async () => {
       await db
         .update(meetings)
