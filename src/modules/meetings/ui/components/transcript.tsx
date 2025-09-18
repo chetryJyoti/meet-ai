@@ -9,13 +9,14 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { generateAvatarUri } from "@/lib/avatar";
+import { LoadingState } from "@/components/loading-state";
 
 interface Props {
   meetingId: string;
 }
 export const Transcript = ({ meetingId }: Props) => {
   const trpc = useTRPC();
-  const { data } = useQuery(
+  const { data, isLoading } = useQuery(
     trpc.meetings.getTranscript.queryOptions({ id: meetingId })
   );
 
@@ -24,7 +25,14 @@ export const Transcript = ({ meetingId }: Props) => {
     item.text.toString().toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  console.log(filteredData);
+  if (isLoading) {
+    return (
+      <LoadingState
+        title="Loading Transcript"
+        description="Please wait while we fetch the transcript"
+      />
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg border px-4 py-5 flex flex-col gap-y-4 w-full">
