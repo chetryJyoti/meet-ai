@@ -7,7 +7,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   FileTextIcon,
-  BookOpenIcon,
   SparklesIcon,
   FileVideoIcon,
   ClockFadingIcon,
@@ -17,6 +16,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { formatDuration } from "@/lib/utils";
 import { Transcript } from "./transcript";
+import { ChatProvider } from "./chat-provider";
 
 interface Props {
   data: MeetingGetOne;
@@ -65,8 +65,12 @@ export const CompletedState = ({ data }: Props) => {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
+
         <TabsContent value="transcript">
           <Transcript meetingId={data.id} />
+        </TabsContent>
+        <TabsContent value="chat">
+          <ChatProvider meetingId={data.id} meetingName={data.name} />
         </TabsContent>
         <TabsContent value="recording">
           {/* recordings are stored in stream right now in the same reason of your application, so it will be automatically deleted after 2 weeks -- it can also be stored in the aws s3 and all */}
