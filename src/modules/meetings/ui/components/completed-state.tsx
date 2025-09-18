@@ -16,6 +16,7 @@ import {
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { formatDuration } from "@/lib/utils";
+import { Transcript } from "./transcript";
 
 interface Props {
   data: MeetingGetOne;
@@ -42,7 +43,7 @@ export const CompletedState = ({ data }: Props) => {
                 data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground h-full hover:text-accent-foreground"
               >
                 <FileTextIcon />
-                Trasnscript
+                Transcript
               </TabsTrigger>
               <TabsTrigger
                 value="recording"
@@ -64,6 +65,9 @@ export const CompletedState = ({ data }: Props) => {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
+        <TabsContent value="transcript">
+          <Transcript meetingId={data.id} />
+        </TabsContent>
         <TabsContent value="recording">
           {/* recordings are stored in stream right now in the same reason of your application, so it will be automatically deleted after 2 weeks -- it can also be stored in the aws s3 and all */}
           <div className="bg-white rounded-lg border px-4 py-5">
