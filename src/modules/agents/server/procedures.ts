@@ -4,7 +4,11 @@ import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { agents } from "@/db/schema";
 import { agentsInsertSchema, agentsUpdateSchema } from "../schemas";
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import {
+  createTRPCRouter,
+  premiumProcedure,
+  protectedProcedure,
+} from "@/trpc/init";
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
@@ -79,7 +83,7 @@ export const agentsRouter = createTRPCRouter({
       };
     }),
 
-  create: protectedProcedure
+  create: premiumProcedure("agents")
     .input(agentsInsertSchema)
     .mutation(async ({ input, ctx }) => {
       const [createdAgent] = await db
@@ -94,13 +98,11 @@ export const agentsRouter = createTRPCRouter({
     .input(agentsUpdateSchema)
     .mutation(async ({ input, ctx }) => {
       const { id, ...updateData } = input;
-      
+
       const [updatedAgent] = await db
         .update(agents)
         .set(updateData)
-        .where(
-          and(eq(agents.id, id), eq(agents.userId, ctx.auth.user.id))
-        )
+        .where(and(eq(agents.id, id), eq(agents.userId, ctx.auth.user.id)))
         .returning();
 
       if (!updatedAgent)

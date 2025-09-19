@@ -17,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { DashboardTrial } from "./dashboard-trial";
 import { Separator } from "@/components/ui/separator";
 import { DashboardUserButton } from "./dashboard-user-button";
 
@@ -42,7 +43,6 @@ const secondSection = [
 ];
 
 export function DashboardSidebar() {
-
   const pathname = usePathname();
   const isItemActive = (itemUrl: string) => {
     return pathname === itemUrl || pathname.startsWith(itemUrl + "/");
@@ -121,6 +121,7 @@ export function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="text-white">
+        <DashboardTrial />
         <DashboardUserButton />
       </SidebarFooter>
     </Sidebar>
