@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Meet AI - AI Agent Platform",
+  title: "Meet AI - Video Meetings with Intelligent Agents",
   description:
     "Create custom AI agents for conversations. Build intelligent chatbots, automate customer service, and deploy AI assistants that understand your business needs.",
 };
