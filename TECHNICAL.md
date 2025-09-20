@@ -1,5 +1,7 @@
 # Meet AI - Technical Documentation
 
+**Last Updated:** September 20, 2025
+
 ## Architecture Overview
 
 Meet AI is a sophisticated AI-powered video meeting platform built on a modern full-stack architecture. The system integrates real-time video calls with intelligent AI agents that can participate in conversations and automatically process meeting content.
@@ -12,8 +14,10 @@ Meet AI is a sophisticated AI-powered video meeting platform built on a modern f
 │                 │    │                  │    │                 │
 │ • React 19      │◄──►│ • Next.js 15     │◄──►│ • OpenAI        │
 │ • Stream Video  │    │ • tRPC           │    │ • Stream Video  │
-│ • TanStack      │    │ • Better Auth    │    │ • Neon DB       │
-│   Query         │    │ • Webhooks       │    │                 │
+│ • Stream Chat   │    │ • Better Auth    │    │ • Stream Chat   │
+│ • TanStack      │    │ • Webhooks       │    │ • Polar API     │
+│   Query         │    │ • Premium Limits │    │ • Neon DB       │
+│ • Command Pal.  │    │                  │    │                 │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                                 │
                                 ▼
@@ -23,6 +27,7 @@ Meet AI is a sophisticated AI-powered video meeting platform built on a modern f
                        │ • Inngest        │
                        │ • AI Processing  │
                        │ • Transcription  │
+                       │ • Billing Hooks  │
                        └──────────────────┘
 ```
 
@@ -45,17 +50,8 @@ Meet AI is a sophisticated AI-powered video meeting platform built on a modern f
 ### 2. AI Agent System
 
 **Agent Architecture:**
-```typescript
-// Agent Entity
-interface Agent {
-  id: string;
-  name: string;
-  instructions: string;  // Custom personality/behavior
-  userId: string;        // Owner
-}
-```
-
-**AI Integration Points:**
+- **Agent Entity**: Unique ID, name, custom instructions, and user ownership
+- **AI Integration Points:**
 - **Real-time Voice**: `@stream-io/openai-realtime-api` connects OpenAI's voice API to video calls
 - **Agent Personality**: Custom instructions define how each agent behaves
 - **Context Awareness**: Agents receive meeting context and participant information
@@ -72,10 +68,7 @@ interface Agent {
 - `call.recording_ready` - Handles meeting recordings
 
 **Event Flow:**
-```typescript
-// Webhook Processing Pipeline
 Stream Video → Webhook → Database Update → Inngest Event → AI Processing
-```
 
 ### 4. Background Processing Pipeline
 
@@ -88,10 +81,7 @@ Stream Video → Webhook → Database Update → Inngest Event → AI Processing
 4. **AI Summarization**: Generate structured markdown summaries
 5. **Database Update**: Save summary and mark meeting complete
 
-```typescript
-// Pipeline Steps
-fetch → parse → enrich → summarize → save
-```
+**Pipeline Steps:** fetch → parse → enrich → summarize → save
 
 **AI Summarizer Agent:**
 - Uses GPT-4o for intelligent summarization
@@ -103,48 +93,17 @@ fetch → parse → enrich → summarize → save
 ### Core Entities
 
 **Users & Authentication:**
-```sql
--- User accounts
-users (id, name, email, email_verified, image, created_at, updated_at)
-
--- OAuth sessions  
-sessions (id, expires_at, token, user_id, ip_address, user_agent)
-
--- OAuth provider accounts
-accounts (id, account_id, provider_id, user_id, access_token, refresh_token)
-```
+- **users**: User accounts with Better Auth integration
+- **sessions**: OAuth sessions with expiration and device tracking
+- **accounts**: OAuth provider accounts (Google, GitHub, Discord)
+- **verification**: Email verification tokens
 
 **Agent Management:**
-```sql
--- Custom AI agents
-agents (
-  id,           -- Unique agent identifier
-  name,         -- Display name
-  user_id,      -- Owner reference
-  instructions, -- AI personality/behavior
-  created_at,
-  updated_at
-)
-```
+- **agents**: Custom AI agents with instructions, user ownership, and timestamps
 
 **Meeting Data:**
-```sql
--- Meeting records
-meetings (
-  id,             -- Meeting identifier (used in Stream calls)
-  name,           -- Meeting title
-  user_id,        -- Meeting owner
-  agent_id,       -- Associated AI agent
-  status,         -- upcoming|active|completed|processing|cancelled
-  started_at,     -- Call start timestamp
-  ended_at,       -- Call end timestamp
-  transcript_url, -- Stream transcription URL
-  recording_url,  -- Stream recording URL
-  summary,        -- AI-generated summary
-  created_at,
-  updated_at
-)
-```
+- **meetings**: Meeting records with agent association, status tracking, transcript/recording URLs, AI summaries, and duration tracking
+- **Status Types**: upcoming, active, completed, processing, cancelled
 
 ## API Architecture
 
@@ -156,13 +115,25 @@ meetings (
 - `agents.update` - Modify agent instructions
 - `agents.delete` - Remove agent
 
-**Meeting Procedures**:
-- `meetings.list` - Fetch user's meetings
-- `meetings.create` - Initialize new meeting
-- `meetings.start` - Begin video call session
+**Meeting Procedures** (`src/modules/meetings/server/procedures.ts`):
+- `meetings.getMany` - Fetch user's meetings with filtering, search, and pagination
+- `meetings.getOne` - Get detailed meeting info with agent and duration
+- `meetings.create` - Initialize new meeting (premium procedure)
+- `meetings.update` - Update meeting details and status
+- `meetings.remove` - Delete meeting
+- `meetings.getTranscript` - Fetch processed meeting transcript
+- `meetings.generateToken` - Create Stream Video authentication token
+- `meetings.generateChatToken` - Create Stream Chat authentication token
 
-**Authentication:**
+**Premium Procedures** (`src/modules/premium/server/procedures.ts`):
+- `premium.getCurrentSubscription` - Get active Polar subscription
+- `premium.getProducts` - List available subscription plans
+- `premium.getFreeUsage` - Calculate current usage for free tier users
+
+**Authentication & Authorization:**
+- `baseProcedure` - No authentication required
 - `protectedProcedure` - Requires valid user session
+- `premiumProcedure` - Enforces subscription limits (agents/meetings)
 - Better Auth middleware handles session validation
 
 ## Frontend Architecture
@@ -173,11 +144,22 @@ meetings (
 ```
 src/modules/
 ├── agents/          # Agent management
-│   ├── hooks/       # React hooks  
+│   ├── hooks/       # React hooks
 │   ├── schemas.ts   # Zod validation
 │   ├── server/      # tRPC procedures
 │   └── ui/          # Components & views
-├── dashboard/       # Navigation & layout
+├── meetings/        # Meeting management & video calls
+│   ├── hooks/       # Meeting-specific hooks
+│   ├── server/      # Meeting procedures
+│   ├── types.ts     # Meeting status types
+│   └── ui/          # Meeting components
+├── premium/         # Subscription & billing
+│   ├── constants.ts # Usage limits
+│   ├── server/      # Polar integration
+│   └── ui/          # Pricing & upgrade UI
+├── dashboard/       # Navigation & command palette
+│   └── ui/components/
+│       └── dashboard-command.tsx # Smart search
 ├── auth/            # Authentication flows
 └── home/           # Landing page
 ```
@@ -186,6 +168,9 @@ src/modules/
 - `useAgents()` - Agent CRUD operations
 - `useMeetings()` - Meeting management
 - `useCreateMeeting()` - Meeting initialization
+- `useMeetingsFilters()` - Meeting filtering and search
+- `useAgentFilters()` - Agent filtering and pagination
+
 
 ### State Management
 
@@ -203,46 +188,25 @@ src/modules/
 ### Environment Variables
 
 **Required Configuration:**
-```bash
-# Database
-DATABASE_URL=""
-
-# Authentication  
-BETTER_AUTH_SECRET=""
-BETTER_AUTH_URL="http://localhost:3000"
-GITHUB_CLIENT_ID=""
-GITHUB_CLIENT_SECRET=""
-GOOGLE_CLIENT_ID=""  
-GOOGLE_CLIENT_SECRET=""
-
-# AI & Video
-OPENAI_API_KEY=""
-NEXT_PUBLIC_STREAM_VIDEO_API_KEY=""
-STREAM_VIDEO_API_KEY=""
-
-# Application
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-```
+- **Database**: PostgreSQL connection URL (Neon)
+- **Authentication**: Better Auth secret and OAuth provider credentials
+- **AI & Video**: OpenAI API key, Stream Video API keys
+- **Payments**: Polar API configuration
+- **Application**: Base URL and environment settings
 
 ### Development Workflow
 
 **Database Management:**
-```bash
-npm run db:push    # Deploy schema changes
-npm run db:studio  # Open Drizzle Studio
-```
+- `npm run db:push` - Deploy schema changes
+- `npm run db:studio` - Open Drizzle Studio
 
 **Development Server:**
-```bash
-npm run dev        # Start Next.js server
-npm run dev:webhook # Start ngrok tunnel for webhooks
-```
+- `npm run dev` - Start Next.js server
+- `npm run dev:webhook` - Start ngrok tunnel for webhooks
 
 **Code Quality:**
-```bash
-npm run lint       # ESLint checking
-npm run build      # Production build
-```
+- `npm run lint` - ESLint checking
+- `npm run build` - Production build
 
 ### Webhook Configuration
 
@@ -319,20 +283,16 @@ npm run build      # Production build
 - Manual testing with video call scenarios
 - Database schema validation via Drizzle
 
-## Future Enhancements
+## Premium Features
 
-### Scalability
-- Multi-tenant architecture for enterprise use
-- Horizontal scaling with load balancers
-- Caching layer (Redis) for high-traffic scenarios
+### Subscription Management
+- **Polar Integration**: Subscription billing and management
+- **Usage Limits**: Free tier restrictions (1 meeting, 2 agents)
+- **Premium Procedures**: tRPC middleware enforces subscription limits
+- **Real-time Usage Tracking**: Accurate meeting and agent counts
 
-### Features
-- Screen sharing integration
-- Meeting scheduling system
-- Advanced AI agent personalities
-- Real-time collaboration tools
-
-### Performance
-- WebSocket connections for real-time updates
-- CDN distribution for global performance
-- Database read replicas for scaling queries
+### Command Palette
+- **Intelligent Search**: Debounced search across meetings and agents
+- **Performance Optimized**: Parallel queries with loading states
+- **Accessibility**: ARIA labels and keyboard navigation
+- **User Experience**: Error handling and empty states
