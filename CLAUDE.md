@@ -22,8 +22,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **API Layer**: tRPC for type-safe API calls
 - **State Management**: TanStack React Query
 - **Styling**: Tailwind CSS v4 with Shadcn/ui components
-- **Payments**: Polar integration
-- **AI Integration**: ChatGPT API
+- **Payments**: Polar integration with subscription management
+- **AI Integration**: OpenAI GPT-4o and Realtime API
+- **Video/Chat**: Stream Video SDK and Stream Chat for real-time communication
+- **Background Processing**: Inngest for webhook handling and async tasks
 
 ### Directory Structure
 
@@ -36,7 +38,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `src/modules/` - Feature-based module organization
   - `agents/` - Agent management (CRUD, filtering, forms)
   - `auth/` - Authentication views and components
-  - `dashboard/` - Dashboard navigation and layout
+  - `dashboard/` - Dashboard navigation, command palette, and layout
+  - `meetings/` - Meeting management, video calls, and chat integration
+  - `premium/` - Subscription management and usage limits
   - `home/` - Landing page
 
 - `src/components/` - Reusable UI components
@@ -65,6 +69,11 @@ Key entities:
 - `account` - OAuth provider accounts
 - `verification` - Email verification tokens
 - `agents` - Custom AI agents with instructions and user ownership
+- `meetings` - Video meetings with status tracking, recording URLs, and transcripts
+  - Status enum: upcoming, active, completed, processing, cancelled
+  - Links to agents and users
+  - Stores transcriptUrl, recordingUrl, summary, duration
+  - Automatic timestamps for created/updated
 
 ### Authentication Flow
 
@@ -76,15 +85,29 @@ Uses Better Auth with:
 
 ### tRPC Setup
 
-- Base procedures: `baseProcedure`, `protectedProcedure` 
+- Base procedures: `baseProcedure`, `protectedProcedure`, `premiumProcedure`
 - Authentication middleware enforces user sessions
+- Premium middleware checks subscription status and usage limits
 - Type-safe client-server communication
 - Integrated with TanStack React Query for caching
+- Routers: agents, meetings, premium, auth
 
 ### Development Notes
 
-- All database operations use Drizzle ORM
+- All database operations use Drizzle ORM with type-safe queries
 - Components use Radix UI primitives with Tailwind styling
 - Form handling with React Hook Form + Zod validation
 - Error boundaries and loading states implemented
 - Responsive design with mobile-first approach
+- Real-time features using Stream Video and Chat SDKs
+- Background processing with Inngest for webhooks and async tasks
+- Meeting counts use efficient `db.$count()` method for better performance
+- Command palette with debounced search and proper error handling
+
+### Premium Features
+
+- **Free Tier**: 1 meeting, 2 agents maximum
+- **Subscription Management**: Powered by Polar
+- **Usage Tracking**: Real-time count of meetings and agents
+- **Premium Procedures**: tRPC middleware enforces limits
+- **Upgrade Flow**: Seamless subscription management
