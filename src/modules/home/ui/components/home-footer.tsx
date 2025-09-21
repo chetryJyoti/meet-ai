@@ -31,6 +31,11 @@ export const HomeFooter = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+                    Pricing
+                  </Link>
+                </li>
+                <li>
                   <Link href="/sign-up" className="text-muted-foreground hover:text-foreground transition-colors">
                     Get Started
                   </Link>

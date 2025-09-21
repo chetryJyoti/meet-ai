@@ -21,24 +21,23 @@ export const HomeNavbar = () => {
 
   const navItems = [
     { name: "Features", link: "#features" },
-    { name: "Pricing", link: "#pricing" },
-    { name: "About", link: "#about" },
+    { name: "Pricing", link: "/pricing" },
   ];
 
   return (
     <Navbar className="top-0">
       <NavBody className="py-4">
         {/* Logo */}
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity relative z-30">
           <Image src="/logo.svg" alt="Meet AI Logo" width={32} height={32} />
           <span className="text-xl font-semibold text-foreground">Meet AI</span>
-        </div>
+        </Link>
 
         {/* Navigation Items */}
         <NavItems items={navItems} />
 
         {/* Auth Buttons */}
-        <div className="flex items-center gap-4 relative z-20">
+        <div className="flex items-center gap-4 relative z-30">
           {!isPending && session?.user ? (
             <Button asChild>
               <Link href="/meetings">Dashboard</Link>
@@ -59,10 +58,10 @@ export const HomeNavbar = () => {
       {/* Mobile Navigation */}
       <MobileNav className="py-4">
         <MobileNavHeader>
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <Image src="/logo.svg" alt="Meet AI Logo" width={32} height={32} />
             <span className="text-xl font-semibold text-foreground">Meet AI</span>
-          </div>
+          </Link>
           <MobileNavToggle
             isOpen={mobileMenuOpen}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
