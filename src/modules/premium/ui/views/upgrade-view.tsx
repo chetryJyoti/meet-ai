@@ -5,7 +5,7 @@ import { useTRPC } from "@/trpc/client";
 import { authClient } from "@/lib/auth-client";
 import { ErrorState } from "@/components/error-state";
 import { LoadingState } from "@/components/loading-state";
-import { PricingCard } from "../components/pricing-card";
+import { PricingCard } from "@/components/pricing";
 
 export const UpgradeView = () => {
   const trpc = useTRPC();

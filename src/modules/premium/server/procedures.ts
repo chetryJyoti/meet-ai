@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { polarClient } from "@/lib/polar";
 import { agents, meetings } from "@/db/schema";
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, protectedProcedure, baseProcedure } from "@/trpc/init";
 
 import { eq, count } from "drizzle-orm";
 
@@ -21,7 +21,7 @@ export const premiumRouter = createTRPCRouter({
     
     return product;
   }),
-  getProducts: protectedProcedure.query(async () => {
+  getProducts: baseProcedure.query(async () => {
     const products = await polarClient.products.list({
       isArchived: false,
       isRecurring: true,
