@@ -1,70 +1,69 @@
 # Meet AI
 
-**AI-Powered Video Meetings with Intelligent Agents**
+**AI-Powered Customer Conversations with Intelligent Agents**
 
-Meet AI transforms video calls by bringing custom AI agents directly into your meetings. Create personalized AI assistants that can join video calls, participate in conversations, and automatically generate detailed meeting summaries.
+Meet AI enables businesses to create custom AI agents that can join video calls, engage in real-time conversations, and deliver personalized customer experiences. Whether it’s customer support, sales consultations, or specialized discussions, your AI agents act as reliable, intelligent team members.
 
 ## What It Does
 
-🎯 **AI Agents in Video Calls** - Your custom AI agents join meetings as virtual participants
-📹 **Live Video Integration** - Real-time video calls powered by Stream Video SDK
-🤖 **Smart Conversation** - AI agents respond naturally using OpenAI's Realtime API
-📝 **Auto Meeting Summaries** - AI generates structured summaries after each meeting
-🎙️ **Transcription & Processing** - Full meeting transcripts with speaker identification
-⚡ **Real-time Processing** - Background processing pipeline handles everything automatically
-💎 **Premium Subscriptions** - Flexible pricing tiers with usage limits via Polar integration
-🔍 **Smart Dashboard Search** - Quickly find meetings and agents with intelligent command palette
+* 🎯 **Custom AI Agents** – Tailored to your brand, product knowledge, and conversation style
+* 📹 **Video Call Integration** – Real-time video conversations with human-like AI agents
+* 🤖 **Conversational Intelligence** – Agents respond naturally using OpenAI’s Realtime API
+* 📝 **Post-Call Insights** – Structured summaries, transcripts, and action points after each call
+* ⚡ **Automation & Scale** – Handle multiple customer interactions seamlessly
+* 💎 **Subscription Tiers** – Flexible usage-based pricing with Polar integration
+* 🔍 **Agent & Call Dashboard** – Manage, search, and analyze customer conversations
 
 ## How It Works
 
-1. **Create Your Agent** - Design custom AI assistants with specific instructions
-2. **Start a Meeting** - Launch video calls with integrated Stream Video
-3. **Agent Joins Automatically** - Your AI agent connects and participates in real-time
-4. **Get Smart Summaries** - Receive detailed meeting notes and insights after each call
+1. **Create Your Agent** – Define its role, instructions, and knowledge base
+2. **Start a Conversation** – Launch video calls powered by Stream Video SDK
+3. **Agent Joins the Call** – The AI participates in real-time, handling queries or demos
+4. **Get Insights** – Summaries, analytics, and transcripts automatically generated
 
 ## Key Features
 
-- 🤖 **Custom AI Agents** - Personalized assistants with specific roles and knowledge
-- 📹 **Video Meetings** - HD video calls with AI participant integration
-- 🎙️ **Real-time Voice** - Natural voice conversations with AI agents
-- 📊 **Meeting Analytics** - Detailed summaries, transcripts, and insights
-- 🔐 **Secure Platform** - Enterprise-grade security with multi-provider auth
-- 🎨 **Modern Interface** - Clean, intuitive design for seamless user experience
-- 💳 **Subscription Management** - Polar-powered billing with flexible pricing tiers
-- 🔍 **Command Palette** - Quick search across all meetings and agents
-- 📈 **Usage Analytics** - Track meeting counts and agent utilization
-- 🎯 **Free Tier** - Get started with 1 meeting and 2 agents at no cost
+* 🤖 **Customizable AI Agents** – For support, sales, or domain-specific expertise
+* 📹 **Video Meetings** – Customers interact with AI in a natural face-to-face experience
+* 🎙️ **Real-time Voice & Chat** – Smooth, interactive conversations
+* 📊 **Call Analytics** – Summaries, transcripts, and customer insights
+* 🔐 **Secure Platform** – Enterprise-ready authentication and data handling
+* 💳 **Subscription Management** – Usage-based billing with Polar
+* 📈 **Dashboard Analytics** – Track agent performance and call outcomes
 
 ## Perfect For
 
-- **Customer Support** - AI agents that can handle support calls and escalate when needed
-- **Sales Demos** - AI assistants that know your product inside and out
-- **Team Meetings** - AI note-takers and meeting facilitators
-- **Training Sessions** - AI coaches and interactive learning companions
+* **Customer Support** – 24/7 AI agents to resolve queries and escalate when needed
+* **Sales Consultations** – Product demos and Q\&A with expert AI assistants
+* **Specialized Conversations** – AI experts for healthcare, finance, education, and more
 
 ## Tech Stack
 
 **Frontend & Backend**
-- Next.js 15 with App Router
-- React 19, TypeScript
-- Tailwind CSS v4 + Shadcn/ui
+
+* Next.js 15 (App Router)
+* React 19, TypeScript
+* Tailwind CSS v4 + Shadcn/ui
 
 **AI & Video**
-- OpenAI GPT-4o & Realtime API
-- Stream Video SDK for HD video calls
-- Stream Chat for real-time messaging
-- Inngest (background processing)
+
+* OpenAI GPT-4o & Realtime API
+* Stream Video SDK for real-time calls
+* Stream Chat for messaging
+* Inngest (background processing)
 
 **Database & Auth**
-- PostgreSQL (Neon) with full schema
-- Drizzle ORM with type-safe queries
-- Better Auth (Google, GitHub, Discord)
+
+* PostgreSQL (Neon)
+* Drizzle ORM
+* Better Auth (Google, GitHub, Discord)
 
 **Infrastructure**
-- tRPC (type-safe APIs)
-- TanStack React Query (caching)
-- Polar (subscription billing)
-- Lucide React (icons)
+
+* tRPC (type-safe APIs)
+* TanStack React Query
+* Polar (subscription billing)
+* Lucide React (icons)
 
 ## Quick Start
 
@@ -101,14 +100,9 @@ npm run db:studio
 ## Recent Updates
 
 **🔧 Latest Improvements**
-- ✅ **Enhanced Dashboard Search** - Implemented intelligent command palette with debounced search, loading states, and error handling
-- ✅ **Fixed Meeting Counts** - Replaced hardcoded values with real database counts using Drizzle's `$count()` method
-- ✅ **Polar Integration** - Full subscription management with usage limits and billing
-- ✅ **Meeting Management** - Complete CRUD operations with status tracking (upcoming, active, completed, processing, cancelled)
-- ✅ **Real-time Chat** - Stream Chat integration for in-meeting communication
-- ✅ **Premium Features** - Usage-based restrictions with upgrade prompts
 
-## Documentation
-
-📚 [Technical Documentation](./TECHNICAL.md) - Deep dive into architecture and implementation
-🔧 [Development Guide](./CLAUDE.md) - Development setup and project structure
+* ✅ **Agent-Centric Dashboard** – Manage multiple agents and conversations in one place
+* ✅ **Call Analytics** – Track meeting outcomes with real database counts
+* ✅ **Polar Billing** – Flexible subscriptions with usage tracking
+* ✅ **Real-time Video & Chat** – Seamless customer conversations with Stream SDK
+* ✅ **Insights Engine** – Summaries and transcripts auto-generated after calls
